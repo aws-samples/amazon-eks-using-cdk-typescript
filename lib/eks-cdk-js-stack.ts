@@ -29,7 +29,7 @@ export class Ekstack extends cdk.Stack {
       default: '1.21',
     });
     // https://github.com/aws/aws-cdk/issues/4159
-    // https://aws.github.io/aws-eks-best-practices/security/docs/detective.html#enable-audit-logs
+    // https://aws.github.io/aws-eks-best-practices/security/docs/detective/#enable-audit-logs
     const eksLoggingOpts = new CfnParameter(this, 'eksLoggingOpts', {
       type: 'CommaDelimitedList',
       default: 'api,audit,authenticator,controllerManager,scheduler',
@@ -103,7 +103,7 @@ export class Ekstack extends cdk.Stack {
     this.cluster = new Cluster(this, 'EKSCluster', {
       version: KubernetesVersion.of(k8sversion.valueAsString),
       defaultCapacity: 0,
-      // https://aws.github.io/aws-eks-best-practices/security/docs/iam.html#make-the-eks-cluster-endpoint-private
+      // https://aws.github.io/aws-eks-best-practices/security/docs/iam/#make-the-eks-cluster-endpoint-private
       endpointAccess: EndpointAccess.PRIVATE,
       vpc: vpc,
       secretsEncryptionKey: clusterKmsKey,
@@ -135,7 +135,7 @@ export class Ekstack extends cdk.Stack {
     this.awsauth.node.addDependency(manifestConsoleViewGroupDeploy);
     this.awsauth.addMastersRole(bastionHostLinux.role, `${bastionHostLinux.role.roleArn}/{{SessionName}}`);
     // Patch aws-node daemonset to use IRSA via EKS Addons, do before nodes are created
-    // https://aws.github.io/aws-eks-best-practices/security/docs/iam.html#update-the-aws-node-daemonset-to-use-irsa
+    // https://aws.github.io/aws-eks-best-practices/security/docs/iam/#update-the-aws-node-daemonset-to-use-irsa
     const awsNodeconditionsPolicy = new CfnJson(this, 'awsVpcCniconditionPolicy', {
       value: {
         [`${this.cluster.openIdConnectProvider.openIdConnectProviderIssuer}:aud`]: 'sts.amazonaws.com',
@@ -172,7 +172,7 @@ export class Ekstack extends cdk.Stack {
     }))();
 
     // Add existing IAM Role to Custom Group
-    // https://aws.github.io/aws-eks-best-practices/security/docs/iam.html#use-iam-roles-when-multiple-users-need-identical-access-to-the-cluster
+    // https://aws.github.io/aws-eks-best-practices/security/docs/iam/#use-iam-roles-when-multiple-users-need-identical-access-to-the-cluster
     // this.awsauth.addRoleMapping(Role.fromRoleArn(this, 'Role_Admin', `arn:aws:iam::${this.account}:role/Admin`), {
     //   groups: ['eks-console-dashboard-full-access-group'],
     //   username: `arn:aws:iam::${this.account}:role/Admin/{{SessionName}}`,
@@ -180,7 +180,7 @@ export class Ekstack extends cdk.Stack {
 
     // Enable EKS Cluster Logging using Custom Resources
     // https://github.com/aws/aws-cdk/issues/4159
-    // https://aws.github.io/aws-eks-best-practices/security/docs/detective.html#enable-audit-logs
+    // https://aws.github.io/aws-eks-best-practices/security/docs/detective/#enable-audit-logs
     const eksLoggingCustomLambdaPolicy = new PolicyStatement(
       {
         resources: [

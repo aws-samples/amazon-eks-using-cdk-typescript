@@ -525,7 +525,7 @@ selector(){
 
 ALL_TESTS="all,alb,ebs,efs,ebs,secrets,networkpolicy,fluentbit,log,clusterautoscaler,containerInsights,hpa"
 SKIP_CDK="false"
-export AWS_DEFAULT_REGION=us-west-2
+# export AWS_DEFAULT_REGION=us-east-1
 export EKS_CLUSTER=myekscluster
 # for aws cli v2 stop output to less
 export AWS_PAGER=""

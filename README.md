@@ -18,20 +18,26 @@ CDK_NEW_BOOTSTRAP=1 cdk bootstrap aws://ACCOUNT_ID/REGION
 cdk diff
 # Deploy the stack, you will be prompted for confirmation for creation of IAM and Security Group resources
 cdk -c cluster_name=myfirstcluster deploy --all
-# To destroy the stack
-cdk destroy -c cluster_name=myfirstcluster --all
+
 ```
 ### Logging into Bastion Host
 Go to the EC2 Console and look for an instance `Name: EKSBastionHost`. Right click on the instance and select connect
+
 ![](images/bastion_connect.png)
 
 Select Session Manager and click the `Connect` button
+
 ![](images/bastion_ssm_connect.png)
 
 In the new window run the following command to configure kubectl with EKS Cluster. Replace CLUSTER_NAME and REGION_NAME with the proper values. 
 
 ```sh
 aws eks update-kubeconfig --name CLUSTER_NAME --region REGION_NAME
+```
+
+To destroy the cluster run the command below
+```sh
+cdk destroy -c cluster_name=myfirstcluster --all
 ```
 
 ### Advanced Deployment

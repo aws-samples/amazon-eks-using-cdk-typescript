@@ -40,7 +40,7 @@ export class K8snodegroups extends cdk.Stack {
     });
 
     const userdataCommands = UserData.forLinux();
-    // SSH only allowed via SSM Session Manager - https://aws.github.io/aws-eks-best-practices/security/docs/hosts.html#minimize-access-to-worker-nodes
+    // SSH only allowed via SSM Session Manager - https://aws.github.io/aws-eks-best-practices/security/docs/hosts/#minimize-access-to-worker-nodes
     userdataCommands.addCommands(
       `sudo yum install -y https://s3.${this.region}.amazonaws.com/amazon-ssm-${this.region}/latest/linux_amd64/amazon-ssm-agent.rpm`,
     );
@@ -66,7 +66,7 @@ export class K8snodegroups extends cdk.Stack {
         ],
         // Restrict access to the instance profile assigned to the worker node (not enabled)
         // Not all components are IMDSv2 aware. Ex. Fluentbit
-        // https://aws.github.io/aws-eks-best-practices/security/docs/iam.html#restrict-access-to-the-instance-profile-assigned-to-the-worker-node
+        // https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node
         // https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-launchtemplate-launchtemplatedata-metadataoptions.html#aws-properties-ec2-launchtemplate-launchtemplatedata-metadataoptions-properties
         // https://aws.github.io/aws-eks-best-practices/security/docs/iam/#when-your-application-needs-access-to-idms-use-imdsv2-and-increase-the-hop-limit-on-ec2-instances-to-2
         metadataOptions: {
