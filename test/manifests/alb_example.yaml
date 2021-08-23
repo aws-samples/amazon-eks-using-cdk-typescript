@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: alb-ingress-test
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: alb-ingress-test
+  name: alb-ingress-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: alb-ingress-app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: alb-ingress-test
+  name: alb-ingress-deployment
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: alb-ingress-app
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: alb-ingress-app
+    spec:
+      containers:
+      - image: httpd:2.4
+        imagePullPolicy: Always
+        name: app-httpd
+        ports:
+        - containerPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: alb-ingress-test
+  name: ingress-httpd
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/load-balancer-name: alb-ingress-httpd
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '15'
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '10'
+spec:
+  rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: alb-ingress-service
+              port:
+                number: 80
