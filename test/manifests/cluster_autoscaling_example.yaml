@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cluster-autoscaler-test
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace:  cluster-autoscaler-test
+  name: httpd-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpd-deploy
+  template:
+    metadata:
+      labels:
+        app: httpd-deploy
+    spec:
+      containers:
+      - image: httpd:2.4
+        name: httpd-pod
+        resources:
+          requests:
+            cpu: 500m
+            memory: 256Mi
