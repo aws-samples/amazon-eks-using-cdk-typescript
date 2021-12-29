@@ -1,11 +1,11 @@
+import { Stack } from 'aws-cdk-lib';
 import {
   GatewayVpcEndpointAwsService,
   Vpc,
   FlowLogTrafficType,
   FlowLogDestination,
   InterfaceVpcEndpoint,
-} from '@aws-cdk/aws-ec2';
-import { Stack } from '@aws-cdk/core';
+} from 'aws-cdk-lib/aws-ec2';
 
 // Private Endpoints
 // https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html#vpc-endpoints-private-clusters

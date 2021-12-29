@@ -1,8 +1,9 @@
 import * as fs from 'fs';
-import { Cluster, HelmChart, KubernetesManifest, ServiceAccount } from '@aws-cdk/aws-eks';
-import { ManagedPolicy } from '@aws-cdk/aws-iam';
-import * as cdk from '@aws-cdk/core';
-import { CfnCondition, CfnParameter, CfnResource, Fn, IConstruct } from '@aws-cdk/core';
+import { CfnCondition, CfnParameter, CfnResource, Fn } from 'aws-cdk-lib';
+import { Cluster, HelmChart, KubernetesManifest, ServiceAccount } from 'aws-cdk-lib/aws-eks';
+import { ManagedPolicy } from 'aws-cdk-lib/aws-iam';
+import * as cdk from 'aws-cdk-lib';
+import { Construct, IConstruct } from 'constructs';
 import * as yaml from 'js-yaml';
 import * as genPolicy from './policies/policies';
 
@@ -11,7 +12,7 @@ interface k8sBaselineProps extends cdk.StackProps {
 }
 
 export class K8sBaselineStack extends cdk.Stack {
-  constructor (scope: cdk.Construct,
+  constructor(scope: Construct,
     id: string,
     props: k8sBaselineProps) {
     super(scope, id, props);
@@ -549,7 +550,7 @@ export class K8sBaselineStack extends cdk.Stack {
   }
 
   // Takes a CDK Abstract Resource and adds CFN Conditions to the underlying CFN Resources to ensure proper resource creation/deletion
-  addConditions (resource: IConstruct, cond: CfnCondition) {
+  addConditions(resource: IConstruct, cond: CfnCondition) {
     // Add Conditions to Cfn type resources only, which map directly to Cloudformation resource type AWS::TYPE::RESOURCE
     // https://docs.aws.amazon.com/cdk/api/latest/docs/core-readme.html#intrinsic-functions-and-condition-expressions
     if (resource.node.defaultChild !== undefined && resource.node.defaultChild.constructor.name.match(/^Cfn+/)) {
@@ -562,7 +563,7 @@ export class K8sBaselineStack extends cdk.Stack {
   }
 
   // Removes namespace and ServiceAccount objects from manifests, performing this in code to keep original manifest files.
-  cleanManifest (file: string) {
+  cleanManifest(file: string) {
     const manifest = yaml.loadAll(fs.readFileSync(file, 'utf-8'), null, { schema: yaml.JSON_SCHEMA });
     return manifest.filter(element => (element.kind !== 'Namespace' && element.kind !== 'ServiceAccount'));
   }

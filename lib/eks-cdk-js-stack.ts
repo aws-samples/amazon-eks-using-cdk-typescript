@@ -1,15 +1,17 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Vpc, IVpc, InstanceType, Port, BlockDeviceVolume, EbsDeviceVolumeType, Instance, MachineImage, AmazonLinuxGeneration, SecurityGroup, Peer } from '@aws-cdk/aws-ec2';
-import { AwsAuth, Cluster, EndpointAccess, KubernetesVersion, KubernetesManifest, CfnAddon } from '@aws-cdk/aws-eks';
-import { PolicyStatement, Effect, Role, ManagedPolicy, ServicePrincipal, OpenIdConnectPrincipal } from '@aws-cdk/aws-iam';
-import { Key } from '@aws-cdk/aws-kms';
-import { Runtime, SingletonFunction, Code } from '@aws-cdk/aws-lambda';
-import { RetentionDays } from '@aws-cdk/aws-logs';
-import { CfnParameter, CustomResource, Duration, CfnJson } from '@aws-cdk/core';
-import * as cdk from '@aws-cdk/core';
-import { Provider } from '@aws-cdk/custom-resources';
+import * as cdk from 'aws-cdk-lib';
+import { CfnParameter, CustomResource, Duration, CfnJson } from 'aws-cdk-lib';
+import { Vpc, IVpc, InstanceType, Port, BlockDeviceVolume, EbsDeviceVolumeType, Instance, MachineImage, AmazonLinuxGeneration, SecurityGroup, Peer } from 'aws-cdk-lib/aws-ec2';
+import { AwsAuth, Cluster, EndpointAccess, KubernetesVersion, KubernetesManifest, CfnAddon } from 'aws-cdk-lib/aws-eks';
+import { PolicyStatement, Effect, Role, ManagedPolicy, ServicePrincipal, OpenIdConnectPrincipal } from 'aws-cdk-lib/aws-iam';
+import { Key } from 'aws-cdk-lib/aws-kms';
+import { Runtime, SingletonFunction, Code } from 'aws-cdk-lib/aws-lambda';
+import { RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { Provider } from 'aws-cdk-lib/custom-resources';
+import { Construct } from 'constructs';
 import * as yaml from 'js-yaml';
+
 import { eksVpc, addEndpoint } from '../lib/vpc-stack';
 
 interface ekstackprops extends cdk.StackProps {
@@ -19,7 +21,7 @@ export class Ekstack extends cdk.Stack {
   public readonly cluster: Cluster
   public readonly awsauth: AwsAuth
 
-  constructor (scope: cdk.Construct, id: string, props: ekstackprops) {
+  constructor(scope: Construct, id: string, props: ekstackprops) {
     super(scope, id, props);
     // Clusters can only be upgraded and cannot be downgraded. Nodegroups are updated separately, refer to nodeAMIVersion parameter in README.md
     // https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html
@@ -231,7 +233,7 @@ export class Ekstack extends cdk.Stack {
   }
 
   // Create nodegroup IAM role in same stack as eks cluster to ensure there is not a circular dependency
-  public createNodegroupRole (id: string): Role {
+  public createNodegroupRole(id: string): Role {
     const role = new Role(this, id, {
       assumedBy: new ServicePrincipal('ec2.amazonaws.com'),
     });
@@ -247,7 +249,7 @@ export class Ekstack extends cdk.Stack {
     return role;
   }
 
-  private getOrCreateVpc (scope: cdk.Construct): IVpc {
+  private getOrCreateVpc(scope: Construct): IVpc {
     // use an existing vpc or create a new one using cdk context
     const stack = cdk.Stack.of(scope);
     // Able to choose default vpc but will error if EKS Cluster endpointAccess is set to be Private, need private subnets
@@ -262,7 +264,7 @@ export class Ekstack extends cdk.Stack {
     return vpc;
   }
 
-  private getOrCreateEksName (scope: cdk.Construct): string {
+  private getOrCreateEksName(scope: Construct): string {
     // use an existing vpc or create a new one using cdk context
     const stack = cdk.Stack.of(scope);
     if (stack.node.tryGetContext('cluster_name') !== undefined) {
