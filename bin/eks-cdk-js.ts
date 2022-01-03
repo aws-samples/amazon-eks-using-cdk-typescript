@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import * as cdk from '@aws-cdk/core';
+import { App } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 import { Ekstack } from '../lib/eks-cdk-js-stack';
 
 import { K8sBaselineStack } from '../lib/k8s-baseline';
@@ -12,7 +13,7 @@ const DEFAULT_CONFIG = {
   },
 };
 
-const app = new cdk.App();
+const app = new App();
 const prefix = stackPrefix(app);
 const eks = new Ekstack(app, 'EKSStack', ({
   env: DEFAULT_CONFIG.env,
@@ -36,7 +37,7 @@ const k8sbase = new K8sBaselineStack(app, 'EKSK8sBaseline', ({
 k8sbase.addDependency(nodegroups);
 nodegroups.addDependency(eks);
 
-function stackPrefix (stack: cdk.Construct): string {
+function stackPrefix (stack: Construct): string {
   const prefixValue = stack.node.tryGetContext('stack_prefix');
 
   if (prefixValue !== undefined) {

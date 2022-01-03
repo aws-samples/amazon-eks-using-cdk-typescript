@@ -1,15 +1,17 @@
-import { CfnLaunchTemplate, MultipartBody, MultipartUserData, UserData } from '@aws-cdk/aws-ec2';
-import { Cluster, Nodegroup } from '@aws-cdk/aws-eks';
-import { Role, ManagedPolicy } from '@aws-cdk/aws-iam';
-import * as cdk from '@aws-cdk/core';
-import { CfnParameter, Fn } from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib';
+import { CfnParameter, Fn } from 'aws-cdk-lib';
+import { CfnLaunchTemplate, MultipartBody, MultipartUserData, UserData } from 'aws-cdk-lib/aws-ec2';
+import { Cluster, Nodegroup } from 'aws-cdk-lib/aws-eks';
+import { Role, ManagedPolicy } from 'aws-cdk-lib/aws-iam';
+import { Construct } from 'constructs';
+
 interface k8snodegroupsProps extends cdk.StackProps {
   eksCluster: Cluster,
   nodeGroupRole: Role
 }
 
 export class K8snodegroups extends cdk.Stack {
-  constructor (scope: cdk.Construct,
+  constructor (scope: Construct,
     id: string,
     props: k8snodegroupsProps) {
     super(scope, id, props);
