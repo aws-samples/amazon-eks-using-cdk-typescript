@@ -1,3 +1,7 @@
+> [!NOTE]
+> Recommend to use the newer released EKS Blueprints for https://aws-quickstart.github.io/cdk-eks-blueprints/getting-started/
+
+
 # Amazon EKS using AWS CDK with Typescript !
 
 A sample project that deploys an EKS Cluster following a set of best practices with options to install additional addons. Easy deployment of the EBS CSI Driver, EFS CSI Driver, FluentBit Centralized Logging using Cloudwatch, Cluster Autoscaler, ALB Ingress Controller, Secrets CSI Driver and Network Policy Engine.
